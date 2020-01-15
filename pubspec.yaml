@@ -1,0 +1,27 @@
+name: launchers
+description: A Flutter plugin that makes it easy to link into other apps
+version: 0.4.4
+homepage: https://github.com/SunnyApp/launchers
+
+environment:
+  sdk: ">=2.6.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  url_launcher: ^5.4.1
+  logging: any
+  equatable: any
+  logging_config:
+    path: ../logging_config
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+# The following section is specific to Flutter.
+flutter:
+  plugin:
+    androidPackage: co.sunnyapp.launchers
+    pluginClass: LaunchersPlugin
+
