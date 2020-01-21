@@ -23,8 +23,6 @@ dev_dependencies:
   launchers:
     path: ../
   logging: any
-  logging_config:
-    path: ../../logging_config
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
