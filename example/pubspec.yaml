@@ -22,7 +22,7 @@ dev_dependencies:
 
   launchers:
     path: ../
-  logging: any
+  logging: ^0.11.3+2
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
