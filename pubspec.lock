@@ -92,14 +92,14 @@ packages:
       name: isolate
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.2"
+    version: "2.0.3"
   isolate_service:
     dependency: transitive
     description:
-      name: isolate_service
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.4.6"
+      path: "../isolate_service"
+      relative: true
+    source: path
+    version: "0.4.7"
   logging:
     dependency: "direct main"
     description:
@@ -110,9 +110,9 @@ packages:
   logging_config:
     dependency: "direct main"
     description:
-      name: logging_config
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "../logging_config"
+      relative: true
+    source: path
     version: "0.4.5"
   matcher:
     dependency: transitive
