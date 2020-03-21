@@ -96,9 +96,9 @@ packages:
   isolate_service:
     dependency: transitive
     description:
-      path: "../isolate_service"
-      relative: true
-    source: path
+      name: isolate_service
+      url: "https://pub.dartlang.org"
+    source: hosted
     version: "0.4.7"
   logging:
     dependency: "direct main"
@@ -110,9 +110,9 @@ packages:
   logging_config:
     dependency: "direct main"
     description:
-      path: "../logging_config"
-      relative: true
-    source: path
+      name: logging_config
+      url: "https://pub.dartlang.org"
+    source: hosted
     version: "0.4.5"
   matcher:
     dependency: transitive
@@ -136,12 +136,12 @@ packages:
     source: hosted
     version: "1.6.4"
   pedantic:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: pedantic
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.8.0+1"
+    version: "1.9.0"
   petitparser:
     dependency: transitive
     description:
@@ -209,7 +209,7 @@ packages:
       name: test_api
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.11"
+    version: "0.2.15"
   typed_data:
     dependency: transitive
     description:
@@ -223,7 +223,7 @@ packages:
       name: url_launcher
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.4.1"
+    version: "5.4.2"
   url_launcher_macos:
     dependency: transitive
     description:

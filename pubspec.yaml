@@ -9,12 +9,11 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  url_launcher: ^5.4.1
-  logging: ^0.11.3+2
-#  logging_config: ^0.4.5
-  logging_config:
-    path: ../logging_config
+  url_launcher: ^5.4.2
+  logging: ^0.11.4
+  logging_config: ^0.4.5
   equatable: ^1.0.2
+  pedantic: ^1.9.0
 
 dev_dependencies:
   flutter_test:

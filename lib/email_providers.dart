@@ -13,7 +13,7 @@ abstract class EmailComposeLauncher implements LaunchProvider<Email, Communicati
   OperationKey<Email, CommunicationResponse> get operationKey => composeEmailOperation;
 }
 
-final composeEmailOperation = OperationKey<Email, CommunicationResponse>("composeEmail");
+final composeEmailOperation = OperationKey<Email, CommunicationResponse>('composeEmail');
 
 class EmailProviderKey extends ProviderKey<Email, CommunicationResponse> {
   const EmailProviderKey(String name) : super(name);
@@ -28,16 +28,17 @@ final gmailComposeLauncher = GmailComposeLauncher();
 class NativeEmailComposeLauncher extends EmailComposeLauncher {
   static const MethodChannel _channel = MethodChannel('github.com/sunnyapp/launchers_compose');
 
+  @override
   final tags = {Tags.communicationsProvider};
 
   @override
   Future<CommunicationResponse> launch([Email input]) async {
     try {
-      final String result = await _channel.invokeMethod('send', input.toJson());
+      final result = await _channel.invokeMethod<String>('send', input.toJson());
       return emailSendResult(result);
     } catch (e) {
       final error = e;
-      if (error is PlatformException && error.code == "not_available") {
+      if (error is PlatformException && error.code == 'not_available') {
         return CommunicationResponse.ofStatus(LaunchResult.unsupported, SendResult.failed);
       } else {
         return CommunicationResponse.failed(e);
@@ -48,7 +49,7 @@ class NativeEmailComposeLauncher extends EmailComposeLauncher {
   @override
   EmailProviderKey get providerKey => key;
 
-  static EmailProviderKey get key => const EmailProviderKey("nativeEmail");
+  static EmailProviderKey get key => const EmailProviderKey('nativeEmail');
 
   @override
   CommunicationResponse error(Object e) {
@@ -56,13 +57,14 @@ class NativeEmailComposeLauncher extends EmailComposeLauncher {
   }
 
   @override
-  String toString() => "provider: ${providerKey.name}";
+  String toString() => 'provider: ${providerKey.name}';
 }
 
 ///
 /// Launches a gmail compose
 ///
 class GmailComposeLauncher extends EmailComposeLauncher {
+  @override
   final tags = {Tags.communicationsProvider};
 
   @override
@@ -74,7 +76,7 @@ class GmailComposeLauncher extends EmailComposeLauncher {
   @override
   EmailProviderKey get providerKey => key;
 
-  static EmailProviderKey get key => const EmailProviderKey("gmailCompose");
+  static EmailProviderKey get key => const EmailProviderKey('gmailCompose');
 
   @override
   CommunicationResponse error(Object e) {
@@ -82,18 +84,18 @@ class GmailComposeLauncher extends EmailComposeLauncher {
   }
 
   @override
-  String toString() => "provider: ${providerKey.name}";
+  String toString() => 'provider: ${providerKey.name}';
 }
 
 CommunicationResponse emailSendResult(String name) {
-  switch (name?.toLowerCase() ?? "") {
-    case "cancelled":
+  switch (name?.toLowerCase() ?? '') {
+    case 'cancelled':
       return CommunicationResponse.cancelled();
-    case "sent":
+    case 'sent':
       return CommunicationResponse.sent();
-    case "unknown":
+    case 'unknown':
       return CommunicationResponse.unknown();
-    case "failed":
+    case 'failed':
       return CommunicationResponse.failed();
     default:
       return CommunicationResponse.unknown();
@@ -131,5 +133,6 @@ class Email implements Subject {
   @override
   Map<String, dynamic> get args => toJson();
 
+  @override
   String get handle => recipients.firstWhere((_) => true, orElse: () => null);
 }
