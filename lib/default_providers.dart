@@ -27,13 +27,18 @@ final gmailProvider = LinkProvider(_gmail,
           "body"
         })}");
 
-final phoneProvider =
-    LinkProvider(_phone, tags: {}, scheme: 'tel:', appLinkGenerator: (input) => 'tel:${telNumber(input.handle)}');
+final phoneProvider = LinkProvider(_phone,
+    tags: {},
+    scheme: 'tel:',
+    appLinkGenerator: (input) => 'tel:${telNumber(input.handle)}');
 
 final smsProvider = LinkProvider(_sms,
     tags: {Tags.communicationsProvider},
     scheme: 'sms:',
-    appLinkGenerator: (input) => "sms:${telNumber(input.handle)}${_toQueryParams(input.args, keys: {"body"})}");
+    appLinkGenerator: (input) =>
+        "sms:${telNumber(input.handle)}${_toQueryParams(input.args, keys: {
+          "body"
+        })}");
 
 final facebookProvider = LinkProvider(_facebook,
     tags: {Tags.socialMedia},
@@ -59,7 +64,8 @@ final linkedinProvider = LinkProvider(_linkedin,
     tags: {Tags.socialMedia},
     scheme: 'linkedin://',
     appLinkGenerator: (input) => 'linkedin://profile/${input.handle}',
-    webLinkGenerator: (input) => 'https://www.linkedin.com/in/${input.handle}/');
+    webLinkGenerator: (input) =>
+        'https://www.linkedin.com/in/${input.handle}/');
 final snapchatProvider = LinkProvider(_snapchat,
     tags: {Tags.socialMedia},
     scheme: 'snapchat://',
@@ -115,7 +121,8 @@ bool _isNumeric(String str) {
   return double.tryParse(str) != null;
 }
 
-String _toQueryParams(Map<String, dynamic> options, {Set<String> keys, String prefix = '?', bool encodeSpaces = true}) {
+String _toQueryParams(Map<String, dynamic> options,
+    {Set<String> keys, String prefix = '?', bool encodeSpaces = true}) {
   final included = (options ?? {})
       .entries
       .where((entry) => keys?.contains(entry.key) ?? true)

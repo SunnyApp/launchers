@@ -6,7 +6,8 @@ import 'link_providers.dart';
 LaunchService _instance;
 
 abstract class LaunchService {
-  void registerProvider<I, R extends LaunchResponse>(LaunchProvider<I, R> provider);
+  void registerProvider<I, R extends LaunchResponse>(
+      LaunchProvider<I, R> provider);
 
   Future<LaunchResults<R>> launch<I, R extends LaunchResponse>(
     OperationKey<I, R> operation,
@@ -14,7 +15,8 @@ abstract class LaunchService {
     ProviderKey<I, R> providerKey,
   ]);
 
-  Future<R> launchProvider<I, R extends LaunchResponse>(ProviderKey<I, R> providerKey, I input);
+  Future<R> launchProvider<I, R extends LaunchResponse>(
+      ProviderKey<I, R> providerKey, I input);
 
   bool contains(ProviderKey key);
 
@@ -59,14 +61,17 @@ class _LaunchService implements LaunchService {
 
   Iterable<LaunchProvider> get allProviders => [..._providers.values];
 
-  LaunchProvider<I, R> _findProvider<I, R extends LaunchResponse>(ProviderKey<I, R> provider) {
+  LaunchProvider<I, R> _findProvider<I, R extends LaunchResponse>(
+      ProviderKey<I, R> provider) {
     final p = _providers[provider];
     return p as LaunchProvider<I, R>;
   }
 
-  List<LaunchProvider<I, R>> _findProviders<I, R extends LaunchResponse>(OperationKey<I, R> operation) {
+  List<LaunchProvider<I, R>> _findProviders<I, R extends LaunchResponse>(
+      OperationKey<I, R> operation) {
     _verifyOperation(operation);
-    final ps = _operationProviders.putIfAbsent(operation.name, () => <LaunchProvider<I, R>>[]);
+    final ps = _operationProviders.putIfAbsent(
+        operation.name, () => <LaunchProvider<I, R>>[]);
     return ps.cast();
   }
 
@@ -76,7 +81,8 @@ class _LaunchService implements LaunchService {
   }
 
   @override
-  void registerProvider<I, R extends LaunchResponse>(LaunchProvider<I, R> provider) {
+  void registerProvider<I, R extends LaunchResponse>(
+      LaunchProvider<I, R> provider) {
     final key = provider.providerKey;
     assert(key != null);
     assert(provider != null);
@@ -89,20 +95,23 @@ class _LaunchService implements LaunchService {
       } else {
         _operations[op.name] = op;
       }
-      final providers = _operationProviders.putIfAbsent(op.name, () => <LaunchProvider<I, R>>[]);
+      final providers = _operationProviders.putIfAbsent(
+          op.name, () => <LaunchProvider<I, R>>[]);
       providers.add(provider);
     }
   }
 
   /// Launches a single provider
-  Future<R> launchProvider<I, R extends LaunchResponse>(ProviderKey<I, R> providerKey, I input) async {
+  Future<R> launchProvider<I, R extends LaunchResponse>(
+      ProviderKey<I, R> providerKey, I input) async {
     final provider = _findProvider<I, R>(providerKey);
     if (provider == null) throw "No provider found: $providerKey";
     return await provider.launch(input);
   }
 
   /// Launches an operation using any available providers
-  Future<LaunchResults<R>> launch<I, R extends LaunchResponse>(OperationKey<I, R> operation, I input,
+  Future<LaunchResults<R>> launch<I, R extends LaunchResponse>(
+      OperationKey<I, R> operation, I input,
       [ProviderKey<I, R> providerKey]) async {
     List<LaunchProvider<I, R>> providers;
     if (providerKey != null) {
@@ -132,7 +141,8 @@ class _LaunchService implements LaunchService {
     return results;
   }
 
-  void _verifyOperation<I, R extends LaunchResponse>(OperationKey<I, R> operation) {
+  void _verifyOperation<I, R extends LaunchResponse>(
+      OperationKey<I, R> operation) {
     assert(_operations[operation.name] == operation);
   }
 
@@ -157,50 +167,70 @@ extension LaunchServiceExt on _LaunchService {
     return this.launchProvider(GmailComposeLauncher.key, email);
   }
 
-  Future<LinkLaunchResponse> openLink(ProviderKey<Subject, LinkLaunchResponse> key, String handle,
+  Future<LinkLaunchResponse> openLink(
+      ProviderKey<Subject, LinkLaunchResponse> key, String handle,
       [Map<String, dynamic> args]) async {
     return await this.launchProvider(key, Subject(handle, args));
   }
 
-  Future<LinkLaunchResponse> openPhone(String number) => openLink(phone, number);
+  Future<LinkLaunchResponse> openPhone(String number) =>
+      openLink(phone, number);
 
-  Future<LinkLaunchResponse> openSms(String number, {String body}) => openLink(sms, number, {"body": body});
+  Future<LinkLaunchResponse> openSms(String number, {String body}) =>
+      openLink(sms, number, {"body": body});
 
-  Future<LinkLaunchResponse> openFacebook(String profileId) => openLink(facebook, profileId);
+  Future<LinkLaunchResponse> openFacebook(String profileId) =>
+      openLink(facebook, profileId);
 
-  Future<LinkLaunchResponse> openInstagram(String profileId) => openLink(instagram, profileId);
+  Future<LinkLaunchResponse> openInstagram(String profileId) =>
+      openLink(instagram, profileId);
 
-  Future<LinkLaunchResponse> openTwitter(String handle) => openLink(twitter, handle);
+  Future<LinkLaunchResponse> openTwitter(String handle) =>
+      openLink(twitter, handle);
 
-  Future<LinkLaunchResponse> openLinkedIn(String profileId) => openLink(linkedin, profileId);
+  Future<LinkLaunchResponse> openLinkedIn(String profileId) =>
+      openLink(linkedin, profileId);
 
-  Future<LinkLaunchResponse> openSnapchat(String profileId) => openLink(snapchat, profileId);
+  Future<LinkLaunchResponse> openSnapchat(String profileId) =>
+      openLink(snapchat, profileId);
 
-  Future<LinkLaunchResponse> openPinterest(String profileId) => openLink(pinterest, profileId);
+  Future<LinkLaunchResponse> openPinterest(String profileId) =>
+      openLink(pinterest, profileId);
 
 //  LinkProviderKey get ios => _ios;
 
   ProviderKey<Subject, LinkLaunchResponse> get sms => smsProvider.providerKey;
 
-  ProviderKey<Subject, LinkLaunchResponse> get phone => phoneProvider.providerKey;
+  ProviderKey<Subject, LinkLaunchResponse> get phone =>
+      phoneProvider.providerKey;
 
-  ProviderKey<Subject, LinkLaunchResponse> get facebook => facebookProvider.providerKey;
+  ProviderKey<Subject, LinkLaunchResponse> get facebook =>
+      facebookProvider.providerKey;
 
-  ProviderKey<Subject, LinkLaunchResponse> get gmail => gmailProvider.providerKey;
+  ProviderKey<Subject, LinkLaunchResponse> get gmail =>
+      gmailProvider.providerKey;
 
-  ProviderKey<Subject, LinkLaunchResponse> get instagram => instagramProvider.providerKey;
+  ProviderKey<Subject, LinkLaunchResponse> get instagram =>
+      instagramProvider.providerKey;
 
-  ProviderKey<Subject, LinkLaunchResponse> get twitter => twitterProvider.providerKey;
+  ProviderKey<Subject, LinkLaunchResponse> get twitter =>
+      twitterProvider.providerKey;
 
-  ProviderKey<Subject, LinkLaunchResponse> get linkedin => linkedinProvider.providerKey;
+  ProviderKey<Subject, LinkLaunchResponse> get linkedin =>
+      linkedinProvider.providerKey;
 
-  ProviderKey<Subject, LinkLaunchResponse> get snapchat => snapchatProvider.providerKey;
+  ProviderKey<Subject, LinkLaunchResponse> get snapchat =>
+      snapchatProvider.providerKey;
 
-  ProviderKey<Subject, LinkLaunchResponse> get pinterest => pinterestProvider.providerKey;
+  ProviderKey<Subject, LinkLaunchResponse> get pinterest =>
+      pinterestProvider.providerKey;
 
-  ProviderKey<Subject, LinkLaunchResponse> get paypal => paypalProvider.providerKey;
+  ProviderKey<Subject, LinkLaunchResponse> get paypal =>
+      paypalProvider.providerKey;
 
-  ProviderKey<Subject, LinkLaunchResponse> get cashapp => cashappProvider.providerKey;
+  ProviderKey<Subject, LinkLaunchResponse> get cashapp =>
+      cashappProvider.providerKey;
 
-  ProviderKey<Subject, LinkLaunchResponse> get venmo => venmoProvider.providerKey;
+  ProviderKey<Subject, LinkLaunchResponse> get venmo =>
+      venmoProvider.providerKey;
 }

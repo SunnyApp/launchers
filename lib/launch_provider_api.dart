@@ -2,7 +2,14 @@ import 'package:equatable/equatable.dart';
 
 import 'link_providers.dart';
 
-enum LaunchResult { openedApp, openedWeb, noProvider, unsupported, error, invalidInput }
+enum LaunchResult {
+  openedApp,
+  openedWeb,
+  noProvider,
+  unsupported,
+  error,
+  invalidInput
+}
 enum SendResult { sent, cancelled, unknown, failed }
 
 /// The base class for this library.  This class represents a service that can be opened on the phone, focusing on
@@ -34,7 +41,8 @@ class LaunchResults<L extends LaunchResponse> {
 
   final Map<ProviderKey, L> _otherResponses;
 
-  LaunchResults(this._mainResponse, this._handledBy, this._otherResponses) : _frozen = true;
+  LaunchResults(this._mainResponse, this._handledBy, this._otherResponses)
+      : _frozen = true;
 
   LaunchResults.builder()
       : _mainResponse = null,
@@ -80,7 +88,8 @@ class LaunchResults<L extends LaunchResponse> {
 abstract class LaunchResponse {
   LaunchResult get launchResult;
 
-  factory LaunchResponse.ofLinkOpen(LaunchResult launchResult) => _LinkOpenResponse(launchResult);
+  factory LaunchResponse.ofLinkOpen(LaunchResult launchResult) =>
+      _LinkOpenResponse(launchResult);
 }
 
 class _LinkOpenResponse implements LaunchResponse {
@@ -88,9 +97,9 @@ class _LinkOpenResponse implements LaunchResponse {
 
   const _LinkOpenResponse(this.launchResult);
 
-  @override
   bool get isSuccessful {
-    return launchResult == LaunchResult.openedApp || launchResult == LaunchResult.openedWeb;
+    return launchResult == LaunchResult.openedApp ||
+        launchResult == LaunchResult.openedWeb;
   }
 
   String toString() => "linkOpen: $launchResult";
@@ -101,21 +110,27 @@ abstract class CommunicationResponse implements LaunchResponse {
 
   SendResult get sendResult;
 
-  factory CommunicationResponse.ofStatus(LaunchResult launchResult, SendResult sendResult) {
+  factory CommunicationResponse.ofStatus(
+      LaunchResult launchResult, SendResult sendResult) {
     return _CommunicationResponse(launchResult, sendResult);
   }
 
   factory CommunicationResponse.cancelled([LaunchResult launchResult]) =>
-      _CommunicationResponse(launchResult ?? LaunchResult.openedApp, SendResult.cancelled);
+      _CommunicationResponse(
+          launchResult ?? LaunchResult.openedApp, SendResult.cancelled);
 
   factory CommunicationResponse.sent([LaunchResult launchResult]) =>
-      _CommunicationResponse(launchResult ?? LaunchResult.openedApp, SendResult.sent);
+      _CommunicationResponse(
+          launchResult ?? LaunchResult.openedApp, SendResult.sent);
 
   factory CommunicationResponse.unknown([LaunchResult launchResult]) =>
-      _CommunicationResponse(launchResult ?? LaunchResult.openedApp, SendResult.unknown);
+      _CommunicationResponse(
+          launchResult ?? LaunchResult.openedApp, SendResult.unknown);
 
-  factory CommunicationResponse.failed([Object error, StackTrace stackTrace, LaunchResult launchResult]) =>
-      _CommunicationResponse(launchResult ?? LaunchResult.openedApp, SendResult.failed, error, stackTrace);
+  factory CommunicationResponse.failed(
+          [Object error, StackTrace stackTrace, LaunchResult launchResult]) =>
+      _CommunicationResponse(launchResult ?? LaunchResult.openedApp,
+          SendResult.failed, error, stackTrace);
 
   factory CommunicationResponse.ofLinkOpen(LinkLaunchResponse linkOpen) {
     return _CommunicationResponse(linkOpen.launchResult, SendResult.unknown);
@@ -128,7 +143,8 @@ class _CommunicationResponse implements CommunicationResponse {
   final Object error;
   final StackTrace stackTrace;
 
-  _CommunicationResponse(this.launchResult, this.sendResult, [this.error, this.stackTrace])
+  _CommunicationResponse(this.launchResult, this.sendResult,
+      [this.error, this.stackTrace])
       : assert(launchResult != null),
         assert(sendResult != null);
 
@@ -167,7 +183,8 @@ abstract class OperationKey<I, R extends LaunchResponse> {
   factory OperationKey(String name) => _OperationKey(name);
 }
 
-class _OperationKey<I, R extends LaunchResponse> extends Equatable implements OperationKey<I, R> {
+class _OperationKey<I, R extends LaunchResponse> extends Equatable
+    implements OperationKey<I, R> {
   final String name;
 
   const _OperationKey(this.name) : assert(name != null);
@@ -182,5 +199,7 @@ class _OperationKey<I, R extends LaunchResponse> extends Equatable implements Op
 }
 
 extension LaunchResponseExt on LaunchResponse {
-  bool get didLaunch => this.launchResult == LaunchResult.openedApp || this.launchResult == LaunchResult.openedWeb;
+  bool get didLaunch =>
+      this.launchResult == LaunchResult.openedApp ||
+      this.launchResult == LaunchResult.openedWeb;
 }

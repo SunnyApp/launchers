@@ -8,12 +8,15 @@ import 'link_providers.dart';
 
 /// This file contains the api and implementation for native email and gmail app integration.
 
-abstract class EmailComposeLauncher implements LaunchProvider<Email, CommunicationResponse> {
+abstract class EmailComposeLauncher
+    implements LaunchProvider<Email, CommunicationResponse> {
   @override
-  OperationKey<Email, CommunicationResponse> get operationKey => composeEmailOperation;
+  OperationKey<Email, CommunicationResponse> get operationKey =>
+      composeEmailOperation;
 }
 
-final composeEmailOperation = OperationKey<Email, CommunicationResponse>('composeEmail');
+final composeEmailOperation =
+    OperationKey<Email, CommunicationResponse>('composeEmail');
 
 class EmailProviderKey extends ProviderKey<Email, CommunicationResponse> {
   const EmailProviderKey(String name) : super(name);
@@ -26,7 +29,8 @@ final gmailComposeLauncher = GmailComposeLauncher();
 /// Launches a native email compose
 ///
 class NativeEmailComposeLauncher extends EmailComposeLauncher {
-  static const MethodChannel _channel = MethodChannel('github.com/sunnyapp/launchers_compose');
+  static const MethodChannel _channel =
+      MethodChannel('github.com/sunnyapp/launchers_compose');
 
   @override
   final tags = {Tags.communicationsProvider};
@@ -34,12 +38,14 @@ class NativeEmailComposeLauncher extends EmailComposeLauncher {
   @override
   Future<CommunicationResponse> launch([Email input]) async {
     try {
-      final result = await _channel.invokeMethod<String>('send', input.toJson());
+      final result =
+          await _channel.invokeMethod<String>('send', input.toJson());
       return emailSendResult(result);
     } catch (e) {
       final error = e;
       if (error is PlatformException && error.code == 'not_available') {
-        return CommunicationResponse.ofStatus(LaunchResult.unsupported, SendResult.failed);
+        return CommunicationResponse.ofStatus(
+            LaunchResult.unsupported, SendResult.failed);
       } else {
         return CommunicationResponse.failed(e);
       }

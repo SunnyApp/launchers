@@ -20,7 +20,8 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    configureLogging(LogConfig(logLevels: {"": Level.FINE}, handler: LoggingHandler.dev()));
+    configureLogging(
+        LogConfig(logLevels: {"": Level.FINE}, handler: LoggingHandler.dev()));
   }
 
   final _recipientController = TextEditingController(
@@ -46,7 +47,8 @@ class _MyAppState extends State<MyApp> {
     Iterable<String> platformResponse;
 
     try {
-      final results = await LaunchService().launch(composeEmailOperation, email);
+      final results =
+          await LaunchService().launch(composeEmailOperation, email);
       print(results);
       platformResponse = results.allAttempts.entries.map((entry) {
         return "Provider = ${entry.key}\nResult = ${entry.value}";
@@ -119,7 +121,8 @@ class _MyAppState extends State<MyApp> {
                     child: TextField(
                       controller: _bodyController,
                       maxLines: 10,
-                      decoration: InputDecoration(labelText: 'Body', border: OutlineInputBorder()),
+                      decoration: InputDecoration(
+                          labelText: 'Body', border: OutlineInputBorder()),
                     ),
                   ),
                   imagePath,
