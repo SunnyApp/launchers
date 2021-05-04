@@ -3,7 +3,7 @@ import 'email_providers.dart';
 import 'launch_provider_api.dart';
 import 'link_providers.dart';
 
-LaunchService _instance;
+LaunchService? _instance;
 
 abstract class LaunchService {
   void registerProvider<I, R extends LaunchResponse>(
@@ -12,7 +12,7 @@ abstract class LaunchService {
   Future<LaunchResults<R>> launch<I, R extends LaunchResponse>(
     OperationKey<I, R> operation,
     I input, [
-    ProviderKey<I, R> providerKey,
+    ProviderKey<I, R>? providerKey,
   ]);
 
   Future<R> launchProvider<I, R extends LaunchResponse>(
@@ -26,7 +26,7 @@ abstract class LaunchService {
 
   factory LaunchService() {
     _instance ??= _LaunchService._();
-    return _instance;
+    return _instance!;
   }
 
   factory LaunchService.newInstance() {
@@ -61,10 +61,10 @@ class _LaunchService implements LaunchService {
 
   Iterable<LaunchProvider> get allProviders => [..._providers.values];
 
-  LaunchProvider<I, R> _findProvider<I, R extends LaunchResponse>(
+  LaunchProvider<I?, R>? _findProvider<I, R extends LaunchResponse>(
       ProviderKey<I, R> provider) {
     final p = _providers[provider];
-    return p as LaunchProvider<I, R>;
+    return p as LaunchProvider<I?, R>?;
   }
 
   List<LaunchProvider<I, R>> _findProviders<I, R extends LaunchResponse>(
@@ -112,8 +112,8 @@ class _LaunchService implements LaunchService {
   /// Launches an operation using any available providers
   Future<LaunchResults<R>> launch<I, R extends LaunchResponse>(
       OperationKey<I, R> operation, I input,
-      [ProviderKey<I, R> providerKey]) async {
-    List<LaunchProvider<I, R>> providers;
+      [ProviderKey<I, R>? providerKey]) async {
+    List<LaunchProvider<I?, R>?> providers;
     if (providerKey != null) {
       providers = [_findProvider<I, R>(providerKey)];
     } else {
@@ -129,11 +129,11 @@ class _LaunchService implements LaunchService {
     var results = LaunchResults<R>.builder();
     for (final p in providers) {
       try {
-        final result = await p.launch(input);
+        final result = await p!.launch(input);
         results[p.providerKey] = result;
         if (result.didLaunch) return results;
       } catch (e) {
-        results[p.providerKey] = p.error(e);
+        results[p!.providerKey] = p.error(e);
       }
     }
 
@@ -169,14 +169,14 @@ extension LaunchServiceExt on _LaunchService {
 
   Future<LinkLaunchResponse> openLink(
       ProviderKey<Subject, LinkLaunchResponse> key, String handle,
-      [Map<String, dynamic> args]) async {
+      [Map<String, dynamic>? args]) async {
     return await this.launchProvider(key, Subject(handle, args));
   }
 
   Future<LinkLaunchResponse> openPhone(String number) =>
       openLink(phone, number);
 
-  Future<LinkLaunchResponse> openSms(String number, {String body}) =>
+  Future<LinkLaunchResponse> openSms(String number, {String? body}) =>
       openLink(sms, number, {"body": body});
 
   Future<LinkLaunchResponse> openFacebook(String profileId) =>

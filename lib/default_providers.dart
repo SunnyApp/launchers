@@ -30,13 +30,13 @@ final gmailProvider = LinkProvider(_gmail,
 final phoneProvider = LinkProvider(_phone,
     tags: {},
     scheme: 'tel:',
-    appLinkGenerator: (input) => 'tel:${telNumber(input.handle)}');
+    appLinkGenerator: (input) => 'tel:${telNumber(input.handle!)}');
 
 final smsProvider = LinkProvider(_sms,
     tags: {Tags.communicationsProvider},
     scheme: 'sms:',
     appLinkGenerator: (input) =>
-        "sms:${telNumber(input.handle)}${_toQueryParams(input.args, keys: {
+        "sms:${telNumber(input.handle!)}${_toQueryParams(input.args, keys: {
           "body"
         })}");
 
@@ -57,7 +57,7 @@ final twitterProvider = LinkProvider(_twitter,
     scheme: 'twitter://',
     appLinkGenerator: (input) => 'twitter://user?screen_name=${input.handle}',
     webLinkGenerator: (input) {
-      final twitterPrefix = (input.handle[0] == '@') ? '' : '@';
+      final twitterPrefix = (input.handle![0] == '@') ? '' : '@';
       return 'https://twitter.com/$twitterPrefix${input.handle}';
     });
 final linkedinProvider = LinkProvider(_linkedin,
@@ -94,7 +94,7 @@ final cashappProvider = LinkProvider(
   _cashapp,
   tags: {Tags.paymentProvider, Tags.socialMedia},
   webLinkGenerator: (input) {
-    var handle = input.handle;
+    var handle = input.handle!;
     if (!handle.startsWith('\$')) {
       handle = '\$$handle';
     }
@@ -121,8 +121,8 @@ bool _isNumeric(String str) {
   return double.tryParse(str) != null;
 }
 
-String _toQueryParams(Map<String, dynamic> options,
-    {Set<String> keys, String prefix = '?', bool encodeSpaces = true}) {
+String _toQueryParams(Map<String, dynamic>? options,
+    {Set<String>? keys, String prefix = '?', bool encodeSpaces = true}) {
   final included = (options ?? {})
       .entries
       .where((entry) => keys?.contains(entry.key) ?? true)
@@ -133,8 +133,8 @@ String _toQueryParams(Map<String, dynamic> options,
   return prefix +
       included.entries.map((entry) {
         final encodedValue = encodeSpaces
-            ? Uri.encodeQueryComponent(entry.value?.toString())
-            : Uri.encodeComponent(entry.value?.toString());
+            ? Uri.encodeQueryComponent(entry.value.toString())
+            : Uri.encodeComponent(entry.value.toString());
         return '${entry.key}=$encodedValue';
       }).join('&');
 }

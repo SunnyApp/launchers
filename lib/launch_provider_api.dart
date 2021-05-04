@@ -25,7 +25,7 @@ abstract class LaunchProvider<I, R extends LaunchResponse> {
   OperationKey<I, R> get operationKey;
 
   /// Launches this app, and returns the appropriate launch response
-  Future<R> launch([I input]);
+  Future<R> launch([I? input]);
 
   /// Creates the appropriate error object
   R error(Object e);
@@ -35,11 +35,11 @@ abstract class LaunchProvider<I, R extends LaunchResponse> {
 }
 
 class LaunchResults<L extends LaunchResponse> {
-  L _mainResponse;
-  ProviderKey _handledBy;
+  L? _mainResponse;
+  ProviderKey? _handledBy;
   final bool _frozen;
 
-  final Map<ProviderKey, L> _otherResponses;
+  final Map<ProviderKey?, L?> _otherResponses;
 
   LaunchResults(this._mainResponse, this._handledBy, this._otherResponses)
       : _frozen = true;
@@ -49,20 +49,18 @@ class LaunchResults<L extends LaunchResponse> {
         _otherResponses = {},
         _frozen = false;
 
-  LaunchResults.single(L response, [ProviderKey provider])
-      : assert(response != null),
-        _mainResponse = response,
+  LaunchResults.single(L response, [ProviderKey? provider])
+      : _mainResponse = response,
         _handledBy = provider,
         _frozen = true,
         _otherResponses = {};
 
-  bool get isSuccessful => _mainResponse?.didLaunch;
-  Map<ProviderKey, L> get otherResponses => {..._otherResponses};
+  bool? get isSuccessful => _mainResponse?.didLaunch;
+  Map<ProviderKey?, L?> get otherResponses => {..._otherResponses};
 
-  L get mainResult => _mainResponse;
+  L? get mainResult => _mainResponse;
 
   operator []=(ProviderKey key, L result) {
-    assert(result != null);
     _checkMutable();
     if (_mainResponse != null) {
       _otherResponses[_handledBy] = _mainResponse;
@@ -75,11 +73,11 @@ class LaunchResults<L extends LaunchResponse> {
     return LaunchResults(_mainResponse, _handledBy, _otherResponses);
   }
 
-  _checkMutable() {
-    if (_frozen) throw "Immutable instance cannot be modified";
+  void _checkMutable() {
+    if (_frozen) throw 'Immutable instance cannot be modified';
   }
 
-  Map<ProviderKey, L> get allAttempts => {
+  Map<ProviderKey?, L?> get allAttempts => {
         _handledBy: _mainResponse,
         ..._otherResponses,
       };
@@ -93,6 +91,7 @@ abstract class LaunchResponse {
 }
 
 class _LinkOpenResponse implements LaunchResponse {
+  @override
   final LaunchResult launchResult;
 
   const _LinkOpenResponse(this.launchResult);
@@ -102,10 +101,12 @@ class _LinkOpenResponse implements LaunchResponse {
         launchResult == LaunchResult.openedWeb;
   }
 
-  String toString() => "linkOpen: $launchResult";
+  @override
+  String toString() => 'linkOpen: $launchResult';
 }
 
 abstract class CommunicationResponse implements LaunchResponse {
+  @override
   LaunchResult get launchResult;
 
   SendResult get sendResult;
@@ -115,20 +116,22 @@ abstract class CommunicationResponse implements LaunchResponse {
     return _CommunicationResponse(launchResult, sendResult);
   }
 
-  factory CommunicationResponse.cancelled([LaunchResult launchResult]) =>
+  factory CommunicationResponse.cancelled([LaunchResult? launchResult]) =>
       _CommunicationResponse(
           launchResult ?? LaunchResult.openedApp, SendResult.cancelled);
 
-  factory CommunicationResponse.sent([LaunchResult launchResult]) =>
+  factory CommunicationResponse.sent([LaunchResult? launchResult]) =>
       _CommunicationResponse(
           launchResult ?? LaunchResult.openedApp, SendResult.sent);
 
-  factory CommunicationResponse.unknown([LaunchResult launchResult]) =>
+  factory CommunicationResponse.unknown([LaunchResult? launchResult]) =>
       _CommunicationResponse(
           launchResult ?? LaunchResult.openedApp, SendResult.unknown);
 
   factory CommunicationResponse.failed(
-          [Object error, StackTrace stackTrace, LaunchResult launchResult]) =>
+          [Object? error,
+          StackTrace? stackTrace,
+          LaunchResult? launchResult]) =>
       _CommunicationResponse(launchResult ?? LaunchResult.openedApp,
           SendResult.failed, error, stackTrace);
 
@@ -138,15 +141,16 @@ abstract class CommunicationResponse implements LaunchResponse {
 }
 
 class _CommunicationResponse implements CommunicationResponse {
+  @override
   final LaunchResult launchResult;
+
+  @override
   final SendResult sendResult;
-  final Object error;
-  final StackTrace stackTrace;
+  final Object? error;
+  final StackTrace? stackTrace;
 
   _CommunicationResponse(this.launchResult, this.sendResult,
-      [this.error, this.stackTrace])
-      : assert(launchResult != null),
-        assert(sendResult != null);
+      [this.error, this.stackTrace]);
 
   @override
   String toString() {
@@ -157,25 +161,26 @@ class _CommunicationResponse implements CommunicationResponse {
 class ProviderKey<I, R extends LaunchResponse> extends Equatable {
   final String name;
 
-  factory ProviderKey.sanitized(String name) {
+  static ProviderKey? sanitized(String? name) {
     if (name == null) return null;
     return ProviderKey(name.toLowerCase().trim());
   }
 
-  const ProviderKey(this.name) : assert(name != null);
+  const ProviderKey(this.name);
 
   @override
   List<Object> get props => [name];
 
+  @override
   String toString() {
-    return "provider[$name]: [$I, $R]";
+    return 'provider[$name]: [$I, $R]';
   }
 }
 
 abstract class OperationKey<I, R extends LaunchResponse> {
   String get name;
 
-  factory OperationKey.sanitized(String name) {
+  static OperationKey? sanitized(String? name) {
     if (name == null) return null;
     return _OperationKey(name.toLowerCase().trim());
   }
@@ -185,9 +190,10 @@ abstract class OperationKey<I, R extends LaunchResponse> {
 
 class _OperationKey<I, R extends LaunchResponse> extends Equatable
     implements OperationKey<I, R> {
+  @override
   final String name;
 
-  const _OperationKey(this.name) : assert(name != null);
+  const _OperationKey(this.name);
 
   @override
   List<Object> get props => [name];
@@ -200,6 +206,6 @@ class _OperationKey<I, R extends LaunchResponse> extends Equatable
 
 extension LaunchResponseExt on LaunchResponse {
   bool get didLaunch =>
-      this.launchResult == LaunchResult.openedApp ||
-      this.launchResult == LaunchResult.openedWeb;
+      launchResult == LaunchResult.openedApp ||
+      launchResult == LaunchResult.openedWeb;
 }

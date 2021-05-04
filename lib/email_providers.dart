@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:collection/collection.dart' show IterableExtension;
 import 'package:flutter/services.dart';
 
 import 'default_providers.dart';
@@ -36,10 +37,10 @@ class NativeEmailComposeLauncher extends EmailComposeLauncher {
   final tags = {Tags.communicationsProvider};
 
   @override
-  Future<CommunicationResponse> launch([Email input]) async {
+  Future<CommunicationResponse> launch([Email? input]) async {
     try {
       final result =
-          await _channel.invokeMethod<String>('send', input.toJson());
+          await _channel.invokeMethod<String>('send', input!.toJson());
       return emailSendResult(result);
     } catch (e) {
       final error = e;
@@ -74,7 +75,7 @@ class GmailComposeLauncher extends EmailComposeLauncher {
   final tags = {Tags.communicationsProvider};
 
   @override
-  Future<CommunicationResponse> launch([Email input]) async {
+  Future<CommunicationResponse> launch([Email? input]) async {
     final gmailResponse = await gmailProvider.launch(input);
     return CommunicationResponse.ofLinkOpen(gmailResponse);
   }
@@ -93,7 +94,7 @@ class GmailComposeLauncher extends EmailComposeLauncher {
   String toString() => 'provider: ${providerKey.name}';
 }
 
-CommunicationResponse emailSendResult(String name) {
+CommunicationResponse emailSendResult(String? name) {
   switch (name?.toLowerCase() ?? '') {
     case 'cancelled':
       return CommunicationResponse.cancelled();
@@ -114,7 +115,7 @@ class Email implements Subject {
   final List<String> cc;
   final List<String> bcc;
   final String body;
-  final String attachmentPath;
+  final String? attachmentPath;
 
   const Email({
     this.subject = '',
@@ -140,5 +141,5 @@ class Email implements Subject {
   Map<String, dynamic> get args => toJson();
 
   @override
-  String get handle => recipients.firstWhere((_) => true, orElse: () => null);
+  String? get handle => recipients.firstWhereOrNull((_) => true);
 }
