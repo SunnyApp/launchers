@@ -1,30 +1,27 @@
 name: launchers
-description: A Flutter plugin that makes it easy to link into native apps or websites
-version: 0.5.6
+version: 0.5.6-nullsafety.1
 homepage: https://github.com/SunnyApp/launchers
-
-environment:
+description: A Flutter plugin that makes it easy to link into native apps or websites
+environment: 
   sdk: '>=2.12.0 <3.0.0'
-  flutter: '<3.0.0'
-dependencies:
-  flutter:
-    sdk: flutter
+  flutter: ^1.10.0
+dependencies: 
   url_launcher: ^6.0.3
   logging: ^1.0.1
   logging_config: ^0.6.7+6
   equatable: ^2.0.0
   pedantic: ^1.11.0
   collection: ^1.15.0-nullsafety.4
-
-dev_dependencies:
-  flutter_test:
+  flutter: 
     sdk: flutter
-
-dependency_overrides:
-  meta: ^1.2.3
-# The following section is specific to Flutter.
+dev_dependencies: 
+  flutter_test: 
+    sdk: flutter
 flutter:
   plugin:
-    androidPackage: co.sunnyapp.launchers
-    pluginClass: LaunchersPlugin
-
+    platforms:
+      android:
+        package: co.sunnyapp.launchers
+        pluginClass: LaunchersPlugin
+      ios:
+        pluginClass: LaunchersPlugin
