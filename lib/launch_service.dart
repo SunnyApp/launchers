@@ -15,6 +15,10 @@ abstract class LaunchService {
     ProviderKey<I, R>? providerKey,
   ]);
 
+  /// Prepares a self-launching link by passing a uri through the various
+  /// link providers until one recognizes the url.
+  PreparedLink? prepareLink(linkUri);
+
   Future<R> launchProvider<I, R extends LaunchResponse>(
       ProviderKey<I, R> providerKey, I input);
 
@@ -43,6 +47,8 @@ class _LaunchService implements LaunchService {
       gmailProvider,
       instagramProvider,
       twitterProvider,
+      youtubeChannelProvider,
+      youtubeVideoProvider,
       linkedinProvider,
       snapchatProvider,
       pinterestProvider,
@@ -78,6 +84,21 @@ class _LaunchService implements LaunchService {
   @override
   List<LaunchProvider> findByTag(String tag) {
     return _providers.values.where((value) => value.isSocialProfile).toList();
+  }
+
+  /// Prepares a self-launching link by passing a uri through the various
+  /// link providers until one recognizes the url.
+  PreparedLink? prepareLink(linkUri) {
+    Uri uri = linkUri is Uri ? linkUri : Uri.parse(linkUri.toString());
+    var linkers = _providers.values.whereType<LinkProvider>();
+    for (var linkProvider in linkers) {
+      if (linkProvider.handleExtractor == null) continue;
+      var resp = linkProvider.handleExtractor!(uri);
+      if (resp?.isNotEmpty == true) {
+        return PreparedLink(linkProvider, resp!);
+      }
+    }
+    return null;
   }
 
   @override

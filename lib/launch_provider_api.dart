@@ -12,6 +12,17 @@ enum LaunchResult {
 }
 enum SendResult { sent, cancelled, unknown, failed }
 
+class PreparedLink {
+  final LaunchProvider<Subject, LinkLaunchResponse> provider;
+  final String subject;
+
+  PreparedLink(this.provider, this.subject);
+
+  Future<LinkLaunchResponse> launch() {
+    return provider.launch(Subject(subject, {}));
+  }
+}
+
 /// The base class for this library.  This class represents a service that can be opened on the phone, focusing on
 /// a particular user, represented by [handle].  Additionally, it may accept [LaunchInput] parameters to further
 /// customize the view that was initialized.  This class can be subclassed to represent a particular type of operation,

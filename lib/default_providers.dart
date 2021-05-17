@@ -17,6 +17,8 @@ const LinkProviderKey _pinterest = LinkProviderKey('pinterest');
 const LinkProviderKey _paypal = LinkProviderKey('paypal');
 const LinkProviderKey _cashapp = LinkProviderKey('cashapp');
 const LinkProviderKey _venmo = LinkProviderKey('venmo');
+const LinkProviderKey _youtubeChannel = LinkProviderKey('youtubeChannel');
+const LinkProviderKey _youtubeVideo = LinkProviderKey('youtubeVideo');
 
 final gmailProvider = LinkProvider(_gmail,
     tags: {Tags.communicationsProvider},
@@ -40,42 +42,39 @@ final smsProvider = LinkProvider(_sms,
           "body"
         })}");
 
-final facebookProvider = LinkProvider(_facebook,
-    tags: {Tags.socialMedia},
-    scheme: 'fb://',
-//      appLinkGenerator: (handle, options) => "fb://profile?app_scoped_user_id=$handle", // Doesn't work properly
-    webLinkGenerator: (input) => 'https://facebook.com/${input.handle}');
+final facebookProvider = LinkProvider.basic(
+  'facebook',
+  appScheme: 'fb://',
+  generateAppLink: false,
+);
 
-final instagramProvider = LinkProvider(_instagram,
-    tags: {Tags.socialMedia},
-    scheme: 'instagram://',
-    appLinkGenerator: (input) => 'instagram://user?username=${input.handle}',
-    webLinkGenerator: (input) => 'https://instagram.com/${input.handle}');
+final instagramProvider = LinkProvider.basic(
+  'instagram',
+  appLinkGenerator: (input) => 'instagram://user?username=${input.handle}',
+);
 
-final twitterProvider = LinkProvider(_twitter,
-    tags: {Tags.socialMedia},
-    scheme: 'twitter://',
+final twitterProvider = LinkProvider.basic('twitter',
     appLinkGenerator: (input) => 'twitter://user?screen_name=${input.handle}',
     webLinkGenerator: (input) {
       final twitterPrefix = (input.handle![0] == '@') ? '' : '@';
       return 'https://twitter.com/$twitterPrefix${input.handle}';
     });
-final linkedinProvider = LinkProvider(_linkedin,
-    tags: {Tags.socialMedia},
-    scheme: 'linkedin://',
+
+final linkedinProvider = LinkProvider.basic('linkedin',
     appLinkGenerator: (input) => 'linkedin://profile/${input.handle}',
     webLinkGenerator: (input) =>
         'https://www.linkedin.com/in/${input.handle}/');
-final snapchatProvider = LinkProvider(_snapchat,
-    tags: {Tags.socialMedia},
-    scheme: 'snapchat://',
-    appLinkGenerator: (input) => 'snapchat://add/${input.handle}',
-    webLinkGenerator: (input) => 'https://snapchat.com/add/${input.handle}');
-final pinterestProvider = LinkProvider(_pinterest,
-    tags: {Tags.socialMedia},
-    scheme: 'pinterest://',
-    appLinkGenerator: (input) => 'pinterest://user/${input.handle}',
-    webLinkGenerator: (input) => 'https://pinterest.com/${input.handle}');
+
+final snapchatProvider = LinkProvider.basic(
+  'snapchat',
+  appLinkGenerator: (input) => 'snapchat://add/${input.handle}',
+  urlPath: 'add/',
+);
+
+final pinterestProvider = LinkProvider.basic(
+  'pinterest',
+  appLinkGenerator: (input) => 'pinterest://user/${input.handle}',
+);
 
 // Cash paying apps
 final paypalProvider = LinkProvider(
@@ -101,6 +100,29 @@ final cashappProvider = LinkProvider(
     return 'https://cash.app/$handle';
   },
 );
+
+final youtubeVideoProvider = LinkProvider(_youtubeVideo,
+    tags: {Tags.socialMedia},
+    scheme: 'youtube://',
+    handleExtractor: (uri) {
+      if (uri.host.contains('youtu') && uri.path.contains('watch')) {
+        return uri.queryParameters['v'];
+      }
+    },
+    webLinkGenerator: (input) =>
+        "https://www.youtube.com/watch?v=${input.handle}",
+    appLinkGenerator: (input) => "youtube://watch?v=${input.handle}");
+
+final youtubeChannelProvider = LinkProvider(_youtubeChannel,
+    tags: {Tags.socialMedia},
+    scheme: 'youtube://',
+    handleExtractor: (uri) {
+      if (uri.host.contains('youtu') && uri.path.contains('channel')) {
+        return uri.pathSegments.isEmpty ? null : uri.pathSegments.last;
+      }
+    },
+    webLinkGenerator: (input) =>
+        "https://www.youtube.com/channel/${input.handle}");
 
 String telNumber(String input) {
   var out = '';
