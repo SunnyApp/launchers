@@ -6,13 +6,14 @@ environment:
   sdk: '>=2.12.0 <3.0.0'
   flutter: ^1.10.0
 dependencies: 
-  url_launcher: ^6.0.3
-  logging: ^1.0.1
+  url_launcher: ^6.1.2
+  logging: ^1.0.2
   logging_config: ^0.6.7+6
-  equatable: ^2.0.0
-  pedantic: ^1.11.0
-  dartxx: ^0.5.0+2
-  collection: ^1.15.0
+  equatable: ^2.0.3
+  pedantic: ^1.11.1
+  collection: ^1.16.0
+  dartxx: 
+    path: /Users/ericm/sunny/player_rank/packages/dartxx
   flutter: 
     sdk: flutter
 dev_dependencies: 
