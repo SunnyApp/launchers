@@ -108,6 +108,7 @@ final youtubeVideoProvider = LinkProvider(_youtubeVideo,
       if (uri.host.contains('youtu') && uri.path.contains('watch')) {
         return uri.queryParameters['v'];
       }
+      return null;
     },
     webLinkGenerator: (input) =>
         "https://www.youtube.com/watch?v=${input.handle}",
@@ -120,6 +121,7 @@ final youtubeChannelProvider = LinkProvider(_youtubeChannel,
       if (uri.host.contains('youtu') && uri.path.contains('channel')) {
         return uri.pathSegments.isEmpty ? null : uri.pathSegments.last;
       }
+      return null;
     },
     webLinkGenerator: (input) =>
         "https://www.youtube.com/channel/${input.handle}");

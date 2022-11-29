@@ -22,6 +22,7 @@ ExtractHandleFromUri basicSocialHandleExtractor(String domain1,
     if (domains.contains(uri.host.toLowerCase())) {
       return uri.pathSegments.lastWhere((element) => element.isNotEmpty);
     }
+    return null;
   };
 }
 
