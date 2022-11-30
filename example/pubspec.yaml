@@ -14,6 +14,8 @@ dev_dependencies:
   flutter_test: 
     sdk: flutter
   launchers: 
-    path: /Users/ericm/sunny/trippi_plugins/launchers
+    git: 
+      url: git@github.com:SunnyApp/launchers
+      ref: trippi_app
 flutter: 
   uses-material-design: true

@@ -12,9 +12,13 @@ dependencies:
   pedantic: ^1.11.1
   collection: ^1.16.0
   logging_config: 
-    path: /Users/ericm/sunny/trippi_plugins/logging_config
+    git: 
+      url: git@github.com:SunnyApp/logging_config
+      ref: trippi_app
   dartxx: 
-    path: /Users/ericm/sunny/trippi_plugins/dartxx
+    git: 
+      url: git@github.com:ericmartineau/dartxx.git
+      ref: trippi_app
   flutter: 
     sdk: flutter
 dev_dependencies: 
