@@ -105,21 +105,17 @@ class _LaunchService implements LaunchService {
   void registerProvider<I, R extends LaunchResponse>(
       LaunchProvider<I, R> provider) {
     final key = provider.providerKey;
-    assert(key != null);
-    assert(provider != null);
 
     _providers[key] = provider;
-    if (provider.operationKey != null) {
-      final op = provider.operationKey;
-      if (_operations.containsKey(op.name)) {
-        _verifyOperation(op);
-      } else {
-        _operations[op.name] = op;
-      }
-      final providers = _operationProviders.putIfAbsent(
-          op.name, () => <LaunchProvider<I, R>>[]);
-      providers.add(provider);
+    final op = provider.operationKey;
+    if (_operations.containsKey(op.name)) {
+      _verifyOperation(op);
+    } else {
+      _operations[op.name] = op;
     }
+    final providers = _operationProviders.putIfAbsent(
+        op.name, () => <LaunchProvider<I, R>>[]);
+    providers.add(provider);
   }
 
   /// Launches a single provider
@@ -169,7 +165,7 @@ class _LaunchService implements LaunchService {
 
   @override
   bool contains(ProviderKey key) {
-    return _providers.containsKey(key.name);
+    return _providers.containsKey(key);
   }
 }
 
